@@ -394,10 +394,6 @@ class MInterface(pl.LightningModule):
         return embeds
 
     def wrap_emb(self, batch):
-        print(f"batch['seq'] shape: {batch['seq'].shape}")
-        # 1. 输出未embedding前的input_ids和对应的token文本
-        print("\n=== 未embedding前的input_ids和token文本 ===")
-        print("batch['tokens'].input_ids shape:", batch["tokens"].input_ids.shape)  # 输出形状
 
         input_embeds = self.llama_model.get_input_embeddings()(batch["tokens"].input_ids)
 
@@ -411,7 +407,6 @@ class MInterface(pl.LightningModule):
                                               add_special_tokens=False).input_ids.item()  # 新增图像token
         cans_image_token_id = self.llama_tokenizer("[CansImage]", return_tensors="pt",
                                                    add_special_tokens=False).input_ids.item()  # 新增候选图像token
-        print(f"特殊token ID: [HistoryEmb]={his_token_id}, [CansEmb]={cans_token_id}, [ItemEmb]={item_token_id}")
         his_item_embeds = self.encode_items(batch["seq"])
         cans_item_embeds = self.encode_items(batch["cans"])
         item_embeds = self.encode_items(batch["item_id"])
